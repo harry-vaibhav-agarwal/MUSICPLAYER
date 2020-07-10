@@ -33,13 +33,14 @@ fileLabel = Label(root, text="Let's make some noise")  # creating a widget
 fileLabel.pack(pady=10)  # packing widget to appear in window
 
 
-lengthLabel=Label(root, text='Total Length : --:--')
+lengthLabel=Label(root, text='Total Length : -- : -- ')
 lengthLabel.pack(pady=10)
 
 def show_Details():
     fileLabel['text'] = 'Playing ' + os.path.basename(filename)
     a = mixer.Sound(filename)
-    mins,secs=divmod(a,60)
+    totallength=a.get_length()
+    mins,secs=divmod(totallength,60)
     mins=round(mins)
     secs=round(secs)
     timeformat = '{:02d}:{:02d}'.format(mins,secs)
