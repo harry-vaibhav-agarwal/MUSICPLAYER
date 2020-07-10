@@ -2,6 +2,7 @@ from tkinter import *
 import tkinter.messagebox
 import tkinter.filedialog
 from pygame import mixer
+from mutagen.mp3 import MP3
 import os
 
 root = Tk()
@@ -38,11 +39,21 @@ lengthLabel.pack(pady=10)
 
 def show_Details():
     fileLabel['text'] = 'Playing ' + os.path.basename(filename)
-    a = mixer.Sound(filename)
-    totallength=a.get_length()
-    mins,secs=divmod(totallength,60)
-    mins=round(mins)
-    secs=round(secs)
+
+    file_data = os.path.splitext(filename)  # we get a list list one is file location second one is extension
+
+    if file_data[1] == ".mp3":
+        audio = MP3(filename)  # getting metadata
+        total_length = audio.info.length
+    else :
+        a = mixer.Sound(filename)
+        total_length = a.get_length()
+
+
+    #converting duration into seconds
+    mins,secs=divmod(total_length,60)
+    mins = round(mins)
+    secs = round(secs)
     timeformat = '{:02d}:{:02d}'.format(mins,secs)
     lengthLabel['text'] = "Total Length" + ' - ' + timeformat
 
