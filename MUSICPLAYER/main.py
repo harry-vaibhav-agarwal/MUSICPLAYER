@@ -4,11 +4,12 @@ import tkinter.filedialog
 from pygame import mixer
 from mutagen.mp3 import MP3
 from tkinter import ttk
+from ttkthemes import ThemedTk
 import threading
 import time
 import os
 
-root = Tk()
+root =  ThemedTk(theme="radiance")
 mixer.init()  # initializing the mixer
 
 root.title('MP3 MUSIC PLAYER')
@@ -39,7 +40,7 @@ delete_photo = PhotoImage(file='images/delete.png')
 #LeftFrame-Playlit,Add Button,DeleteButton
 #RightFrame-TopFrame,MiddleFrame,BottomFrame
 
-statusBar = ttk.Label(root, text='Welcome to Mp3 Music Player', relief=SUNKEN, anchor=W)
+statusBar = ttk.Label(root, text='Welcome to Mp3 Music Player', relief=SUNKEN, anchor=W,font='Times 12 italic')
 statusBar.pack(side=BOTTOM, fill=X)
 
 
@@ -95,15 +96,15 @@ fileSubmenu.add_command(label="Exit", command=root.destroy)
 
 
 rightFrame = Frame(root)
-rightFrame.pack()
+rightFrame.pack(pady=30)
 
 topFrame = Frame(rightFrame)
 topFrame.pack()
 
-lengthLabel = ttk.Label(topFrame, text='Total Length : -- : -- ')
+lengthLabel = ttk.Label(topFrame, text='Total Length : -- : -- ',font='Arial 10 bold')
 lengthLabel.pack(pady=10)
 
-currentTimeLabel = ttk.Label(topFrame, text='Time remaining : -- : -- ', relief=GROOVE)
+currentTimeLabel = ttk.Label(topFrame, text='Time remaining : -- : -- ', relief=GROOVE,font='Arial 10 bold')
 currentTimeLabel.pack(pady=10)
 
 
