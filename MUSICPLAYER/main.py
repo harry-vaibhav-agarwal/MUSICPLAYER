@@ -45,13 +45,46 @@ statusBar.pack(side=BOTTOM, fill=X)
 
 
 leftFrame = Frame(root)
-leftFrame.pack(side=LEFT, padx=40, pady=20)
+leftFrame.pack(side=LEFT, padx=40, pady=10)
 
-playListBox = Listbox(leftFrame)
-playListBox.pack()
 
+leftThemeFrame =Frame(leftFrame)
+leftThemeFrame.pack(side=TOP,padx=5,pady=40)
+
+
+leftPlayListFrame=Frame(leftFrame)
+leftPlayListFrame.pack()
 
 playList=[]
+themes=["classic","clearlooks","radiance","blue","black","aquativo"]
+
+themelabel=ttk.Label(leftThemeFrame,text='Theme',anchor=W,font='Arial 12 bold')
+themelabel.pack(side=LEFT,pady=5)
+
+variable=tkinter.StringVar(leftThemeFrame)
+opt=ttk.OptionMenu(leftThemeFrame,variable,*themes)
+variable.set(themes[2])
+opt.config(width=15)
+opt.pack(pady=10,padx=5)
+
+
+
+def change_theme(*args):
+    root.set_theme(variable.get())
+
+
+
+variable.trace("w", change_theme)
+
+playListBox = Listbox(leftPlayListFrame)
+playListBox.pack(padx=2,pady=15)
+
+
+
+
+
+
+
 
 #playlist contains filename with path
 #playlistbox only contains filename not the path
@@ -80,17 +113,17 @@ def browse_file():
     add_to_playlist(filename_path)
 
 
-addBtn = ttk.Button(leftFrame,image = add_photo,command=browse_file)
+
+
+addBtn = ttk.Button(leftPlayListFrame,image = add_photo,command=browse_file)
 addBtn.pack(side=LEFT,pady=10,padx=5)
 
-deleteBtn = ttk.Button(leftFrame,image = delete_photo,command=del_song)
+deleteBtn = ttk.Button(leftPlayListFrame,image = delete_photo,command=del_song)
 deleteBtn.pack(side=LEFT,pady=10,padx=5)
 
 
 fileSubmenu.add_command(label="Open", command=browse_file)
 fileSubmenu.add_command(label="Exit", command=root.destroy)
-
-
 
 
 
