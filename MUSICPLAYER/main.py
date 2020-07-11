@@ -11,7 +11,6 @@ root = Tk()
 mixer.init()  # initializing the mixer
 
 root.title('MP3 MUSIC PLAYER')
-root.geometry('400x400')
 root.iconbitmap('images/melody.ico')
 
 menubar = Menu(root)
@@ -24,32 +23,88 @@ menubar.add_cascade(label="File", menu=fileSubmenu)
 menubar.add_cascade(label="Help", menu=helpSubmenu)
 
 
+
+play_photo = PhotoImage(file='images/play.png')
+pause_photo = PhotoImage(file='images/pause.png')
+stop_photo = PhotoImage(file='images/stop.png')
+rewind_photo = PhotoImage(file='images/rewind.png')
+volume_photo = PhotoImage(file='images/volume.png')
+mute_photo = PhotoImage(file='images/mute.png')
+add_photo = PhotoImage(file='images/add.png')
+delete_photo = PhotoImage(file='images/delete.png')
+
+
+#Root-LeftFrame,RightFrame
+#LeftFrame-Playlit,Add Button,DeleteButton
+#RightFrame-TopFrame,MiddleFrame,BottomFrame
+
+statusBar = Label(root, text='Welcome to Mp3 Music Player', relief=SUNKEN, anchor=W)
+statusBar.pack(side=BOTTOM, fill=X)
+
+
+leftFrame = Frame(root)
+leftFrame.pack(side=LEFT, padx=40, pady=20)
+
+playListBox = Listbox(leftFrame)
+playListBox.pack()
+
+
+playList=[]
+
+#playlist contains filename with path
+#playlistbox only contains filename not the path
+#we need path for  mixer.music.load function
+
+def add_to_playlist(filename):
+
+    filename=os.path.basename(filename)
+    index=0
+    playListBox.insert(index, filename)
+    playList.insert(index,filename_path)
+    index+=1
+
+
+
 def browse_file():
-    global filename
-    filename = tkinter.filedialog.askopenfilename()
+    global filename_path
+    filename_path = tkinter.filedialog.askopenfilename()
+    add_to_playlist(filename_path)
+
+
+addBtn = Button(leftFrame,image = add_photo,command=browse_file)
+addBtn.pack(side=LEFT,pady=10,padx=5)
+
+deleteBtn = Button(leftFrame,image = delete_photo)
+deleteBtn.pack(side=LEFT,pady=10,padx=5)
 
 
 fileSubmenu.add_command(label="Open", command=browse_file)
 fileSubmenu.add_command(label="Exit", command=root.destroy)
 
-fileLabel = Label(root, text="Let's make some noise")  # creating a widget
-fileLabel.pack(pady=5)  # packing widget to appear in window
 
 
-lengthLabel=Label(root, text='Total Length : -- : -- ')
+
+
+
+rightFrame = Frame(root)
+rightFrame.pack()
+
+topFrame = Frame(rightFrame)
+topFrame.pack()
+
+lengthLabel = Label(topFrame, text='Total Length : -- : -- ')
 lengthLabel.pack(pady=10)
 
-
-currentTimeLabel = Label(root, text ='Time remaining : -- : -- ' ,relief = GROOVE)
+currentTimeLabel = Label(topFrame, text='Time remaining : -- : -- ', relief=GROOVE)
 currentTimeLabel.pack(pady=10)
 
 
-
+#convert function sets the remaining time correctly of the song that is playing
 def convert(total_length):
     global paused
     t = total_length
-    while t >= 0  and mixer.music.get_busy():
-        if paused :
+    while t >= 0 and mixer.music.get_busy():
+        if paused:
             continue
         else:
             mins, secs = divmod(t, 60)
@@ -60,31 +115,25 @@ def convert(total_length):
             t -= 1
             time.sleep(1)
 
-def show_Details():
-    fileLabel['text'] = 'Playing ' + os.path.basename(filename)
 
-    file_data = os.path.splitext(filename)  # we get a list list one is file location second one is extension
+def show_Details(file):
+    file_data = os.path.splitext(file)  # we get a list list one is file location second one is extension
 
     if file_data[1] == ".mp3":
-        audio = MP3(filename)  # getting metadata
+        audio = MP3(file)  # getting metadata
         total_length = audio.info.length
-    else :
-        a = mixer.Sound(filename)
+    else:
+        a = mixer.Sound(file)
         total_length = a.get_length()
 
-
-    #converting duration into seconds
-    mins,secs=divmod(total_length,60)
+    # converting duration into seconds
+    mins, secs = divmod(total_length, 60)
     mins = round(mins)
     secs = round(secs)
-    timeformat = '{:02d}:{:02d}'.format(mins,secs)
+    timeformat = '{:02d}:{:02d}'.format(mins, secs)
     lengthLabel['text'] = "Total Length" + ' - ' + timeformat
-    thread = threading.Thread(target=convert,args=(total_length,))
+    thread = threading.Thread(target=convert, args=(total_length,))
     thread.start()
-
-
-statusBar = Label(root, text='Welcome to Mp3 Music Player', relief=SUNKEN, anchor=W)
-statusBar.pack(side=BOTTOM, fill=X)
 
 
 def about_us():
@@ -94,31 +143,32 @@ def about_us():
 
 helpSubmenu.add_command(label="About", command=about_us)
 
-play_photo = PhotoImage(file='images/play.png')
-pause_photo = PhotoImage(file='images/pause.png')
-stop_photo = PhotoImage(file='images/stop.png')
-rewind_photo = PhotoImage(file='images/rewind.png')
-volume_photo = PhotoImage(file='images/volume.png')
-mute_photo = PhotoImage(file='images/mute.png')
-
-middleFrame = Frame(root)
+middleFrame = Frame(rightFrame)
 middleFrame.pack(pady=35)
 
-paused=FALSE
+paused = FALSE
+
+
 def play_music():
     global paused
     if paused:
         mixer.music.unpause()
         statusBar['text'] = 'Music Resumes'
-        paused=FALSE
+        paused = FALSE
     else:
         try:
-            mixer.music.load(filename)
+            stop_music()
+            time.sleep(1)
+            selected_song = playListBox.curselection()
+            selected_song = int(selected_song[0])
+            play_it = playList[selected_song]
+            mixer.music.load(play_it)
             mixer.music.play()
-            statusBar['text'] = 'Playing music ' + os.path.basename(filename)
-            show_Details()
-        except :
-            tkinter.messagebox.showerror('Error','Music Player cannot find the file.Please check it again')
+            statusBar['text'] = 'Playing music ' + os.path.basename(play_it)
+            show_Details(play_it)
+        except:
+            tkinter.messagebox.showerror('Error', 'Music Player cannot find the file.Please check it again')
+
 
 def pause_music():
     global paused
@@ -144,6 +194,7 @@ def rewind_music():
 muted = FALSE
 
 
+#muting umnuting and toggling the photo
 def mute_music():
     global muted
     if muted:
@@ -158,18 +209,20 @@ def mute_music():
         muted = TRUE
 
 
+#Middle frame for play,pause and stop
+
 playBtn = Button(middleFrame, image=play_photo, command=play_music)
-playBtn.grid(row=0, column=0, padx=10)
+playBtn.grid(row=0, column=0, padx=20)
 
 pauseBtn = Button(middleFrame, image=pause_photo, command=pause_music)
-pauseBtn.grid(row=0, column=1, padx=10)
+pauseBtn.grid(row=0, column=1, padx=20)
 
 stopBtn = Button(middleFrame, image=stop_photo, command=stop_music)
-stopBtn.grid(row=0, column=2, padx=10)
+stopBtn.grid(row=0, column=2, padx=20)
 
 # Bottom Frame for rewind volume,mute etc
 
-bottomFrame = Frame(root)
+bottomFrame = Frame(rightFrame)
 bottomFrame.pack()
 
 rewindBtn = Button(bottomFrame, image=rewind_photo, command=rewind_music)
@@ -183,4 +236,11 @@ scale.set(70)  # default value
 mixer.music.set_volume(0.7)
 scale.grid(row=0, column=2, pady=20, padx=30)
 
+
+def on_closing():
+    stop_music()         #stopping music first then closing the window
+    root.destroy()
+
+
+root.protocol("WM_DELETE_WINDOW", on_closing)  # overriding default functionality of close
 root.mainloop()
