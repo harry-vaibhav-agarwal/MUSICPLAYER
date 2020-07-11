@@ -3,6 +3,7 @@ import tkinter.messagebox
 import tkinter.filedialog
 from pygame import mixer
 from mutagen.mp3 import MP3
+from tkinter import ttk
 import threading
 import time
 import os
@@ -38,7 +39,7 @@ delete_photo = PhotoImage(file='images/delete.png')
 #LeftFrame-Playlit,Add Button,DeleteButton
 #RightFrame-TopFrame,MiddleFrame,BottomFrame
 
-statusBar = Label(root, text='Welcome to Mp3 Music Player', relief=SUNKEN, anchor=W)
+statusBar = ttk.Label(root, text='Welcome to Mp3 Music Player', relief=SUNKEN, anchor=W)
 statusBar.pack(side=BOTTOM, fill=X)
 
 
@@ -78,10 +79,10 @@ def browse_file():
     add_to_playlist(filename_path)
 
 
-addBtn = Button(leftFrame,image = add_photo,command=browse_file)
+addBtn = ttk.Button(leftFrame,image = add_photo,command=browse_file)
 addBtn.pack(side=LEFT,pady=10,padx=5)
 
-deleteBtn = Button(leftFrame,image = delete_photo,command=del_song)
+deleteBtn = ttk.Button(leftFrame,image = delete_photo,command=del_song)
 deleteBtn.pack(side=LEFT,pady=10,padx=5)
 
 
@@ -99,10 +100,10 @@ rightFrame.pack()
 topFrame = Frame(rightFrame)
 topFrame.pack()
 
-lengthLabel = Label(topFrame, text='Total Length : -- : -- ')
+lengthLabel = ttk.Label(topFrame, text='Total Length : -- : -- ')
 lengthLabel.pack(pady=10)
 
-currentTimeLabel = Label(topFrame, text='Time remaining : -- : -- ', relief=GROOVE)
+currentTimeLabel = ttk.Label(topFrame, text='Time remaining : -- : -- ', relief=GROOVE)
 currentTimeLabel.pack(pady=10)
 
 
@@ -190,7 +191,7 @@ def stop_music():
 
 
 def set_vol(val):
-    mixer.music.set_volume(int(val) / 100)
+    mixer.music.set_volume(float(val) / 100)
 
 
 def rewind_music():
@@ -218,13 +219,13 @@ def mute_music():
 
 #Middle frame for play,pause and stop
 
-playBtn = Button(middleFrame, image=play_photo, command=play_music)
+playBtn = ttk.Button(middleFrame, image=play_photo, command=play_music)
 playBtn.grid(row=0, column=0, padx=20)
 
-pauseBtn = Button(middleFrame, image=pause_photo, command=pause_music)
+pauseBtn = ttk.Button(middleFrame, image=pause_photo, command=pause_music)
 pauseBtn.grid(row=0, column=1, padx=20)
 
-stopBtn = Button(middleFrame, image=stop_photo, command=stop_music)
+stopBtn = ttk.Button(middleFrame, image=stop_photo, command=stop_music)
 stopBtn.grid(row=0, column=2, padx=20)
 
 # Bottom Frame for rewind volume,mute etc
@@ -232,13 +233,13 @@ stopBtn.grid(row=0, column=2, padx=20)
 bottomFrame = Frame(rightFrame)
 bottomFrame.pack()
 
-rewindBtn = Button(bottomFrame, image=rewind_photo, command=rewind_music)
+rewindBtn = ttk.Button(bottomFrame, image=rewind_photo, command=rewind_music)
 rewindBtn.grid(row=0, column=0, pady=20)
 
-volumeBtn = Button(bottomFrame, image=volume_photo, command=mute_music)
+volumeBtn = ttk.Button(bottomFrame, image=volume_photo, command=mute_music)
 volumeBtn.grid(row=0, column=1, pady=20, padx=10)
 
-scale = Scale(bottomFrame, from_=0, to=100, orient=HORIZONTAL, command=set_vol)
+scale = ttk.Scale(bottomFrame, from_=0, to=100, orient=HORIZONTAL, command=set_vol)
 scale.set(70)  # default value
 mixer.music.set_volume(0.7)
 scale.grid(row=0, column=2, pady=20, padx=30)
