@@ -64,6 +64,13 @@ def add_to_playlist(filename):
     index+=1
 
 
+def del_song():
+    selected_song=playListBox.curselection()
+    selected_song = int(selected_song[0])
+    playListBox.delete(selected_song)
+    playList.pop(selected_song)
+
+
 
 def browse_file():
     global filename_path
@@ -74,7 +81,7 @@ def browse_file():
 addBtn = Button(leftFrame,image = add_photo,command=browse_file)
 addBtn.pack(side=LEFT,pady=10,padx=5)
 
-deleteBtn = Button(leftFrame,image = delete_photo)
+deleteBtn = Button(leftFrame,image = delete_photo,command=del_song)
 deleteBtn.pack(side=LEFT,pady=10,padx=5)
 
 
