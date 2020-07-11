@@ -14,7 +14,6 @@ mixer.init()  # initializing the mixer
 
 root.title('MP3 MUSIC PLAYER')
 root.iconbitmap('images/melody.ico')
-
 menubar = Menu(root)
 root.config(menu=menubar)
 
@@ -56,7 +55,7 @@ leftPlayListFrame=Frame(leftFrame)
 leftPlayListFrame.pack()
 
 playList=[]
-themes=["classic","clearlooks","radiance","blue","black","aquativo"]
+themes=['aquativo', 'clearlooks', 'radiance', 'clam','default', 'scidpink', 'ubuntu',  'elegance', 'scidblue', 'smog', 'scidmint', 'breeze']
 
 themelabel=ttk.Label(leftThemeFrame,text='Theme',anchor=W,font='Arial 12 bold')
 themelabel.pack(side=LEFT,pady=5)
