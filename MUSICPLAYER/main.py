@@ -3,6 +3,8 @@ import tkinter.messagebox
 import tkinter.filedialog
 from pygame import mixer
 from mutagen.mp3 import MP3
+import threading
+import time
 import os
 
 root = Tk()
@@ -31,11 +33,32 @@ fileSubmenu.add_command(label="Open", command=browse_file)
 fileSubmenu.add_command(label="Exit", command=root.destroy)
 
 fileLabel = Label(root, text="Let's make some noise")  # creating a widget
-fileLabel.pack(pady=10)  # packing widget to appear in window
+fileLabel.pack(pady=5)  # packing widget to appear in window
 
 
 lengthLabel=Label(root, text='Total Length : -- : -- ')
 lengthLabel.pack(pady=10)
+
+
+currentTimeLabel = Label(root, text ='Time remaining : -- : -- ' ,relief = GROOVE)
+currentTimeLabel.pack(pady=10)
+
+
+
+def convert(total_length):
+    global paused
+    t = total_length
+    while t >= 0  and mixer.music.get_busy():
+        if paused :
+            continue
+        else:
+            mins, secs = divmod(t, 60)
+            mins = round(mins)
+            secs = round(secs)
+            timeformat = '{:02d}:{:02d}'.format(mins, secs)
+            currentTimeLabel['text'] = "Time remaining " + ' - ' + timeformat + ' '
+            t -= 1
+            time.sleep(1)
 
 def show_Details():
     fileLabel['text'] = 'Playing ' + os.path.basename(filename)
@@ -56,6 +79,8 @@ def show_Details():
     secs = round(secs)
     timeformat = '{:02d}:{:02d}'.format(mins,secs)
     lengthLabel['text'] = "Total Length" + ' - ' + timeformat
+    thread = threading.Thread(target=convert,args=(total_length,))
+    thread.start()
 
 
 statusBar = Label(root, text='Welcome to Mp3 Music Player', relief=SUNKEN, anchor=W)
